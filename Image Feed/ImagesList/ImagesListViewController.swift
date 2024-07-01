@@ -43,7 +43,6 @@ extension ImagesListViewController {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
             return
         }
-
         cell.cellImage.image = image
         cell.dateLabel.text = dateFormatter.string(from: Date())
 

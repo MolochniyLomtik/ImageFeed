@@ -87,6 +87,5 @@ final class ProfileViewController: UIViewController {
 
   @objc
   private func didTapButton() {
-    // Реализуйте действия при нажатии кнопки выхода
   }
 }

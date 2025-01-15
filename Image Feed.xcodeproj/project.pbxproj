@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		55063DAA28F724E6008782E1 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55063DA928F724E6008782E1 /* AuthViewController.swift */; };
 		55063DAD28F72D48008782E1 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55063DAC28F72D48008782E1 /* WebViewViewController.swift */; };
+		63A3EAB12D33C57500A1E6B7 /* URLSession + Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A3EAB02D33C56E00A1E6B7 /* URLSession + Data.swift */; };
 		7D3DFB1528DDF696005A13F3 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3DFB1328DDF696005A13F3 /* ImagesListCell.swift */; };
 		7D3DFB1628DDF696005A13F3 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3DFB1428DDF696005A13F3 /* ImagesListViewController.swift */; };
 		7D9CFA4328DDEE7F00D971A7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D9CFA4228DDEE7F00D971A7 /* AppDelegate.swift */; };
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		55063DA928F724E6008782E1 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		55063DAC28F72D48008782E1 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
+		63A3EAB02D33C56E00A1E6B7 /* URLSession + Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession + Data.swift"; sourceTree = "<group>"; };
 		7D3DFB1328DDF696005A13F3 /* ImagesListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
 		7D3DFB1428DDF696005A13F3 /* ImagesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesListViewController.swift; sourceTree = "<group>"; };
 		7D9CFA3F28DDEE7F00D971A7 /* Image Feed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Image Feed.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +64,14 @@
 				55063DAC28F72D48008782E1 /* WebViewViewController.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		63A3EAAF2D33C55A00A1E6B7 /* URLSession */ = {
+			isa = PBXGroup;
+			children = (
+				63A3EAB02D33C56E00A1E6B7 /* URLSession + Data.swift */,
+			);
+			path = URLSession;
 			sourceTree = "<group>";
 		};
 		7D9CFA3628DDEE7F00D971A7 = {
@@ -128,6 +138,7 @@
 		8FB291B62902DA0000A53129 /* ServiceAccessLayer */ = {
 			isa = PBXGroup;
 			children = (
+				63A3EAAF2D33C55A00A1E6B7 /* URLSession */,
 				8FB291B72902DA0E00A53129 /* OAuth2 */,
 			);
 			path = ServiceAccessLayer;
@@ -232,6 +243,7 @@
 				55063DAD28F72D48008782E1 /* WebViewViewController.swift in Sources */,
 				7D3DFB1528DDF696005A13F3 /* ImagesListCell.swift in Sources */,
 				8FB291B92902DA2100A53129 /* OAuth2Service.swift in Sources */,
+				63A3EAB12D33C57500A1E6B7 /* URLSession + Data.swift in Sources */,
 				8FB291B52902C12000A53129 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,7 +391,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 8VQ366U662;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Image Feed/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -408,7 +420,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 8VQ366U662;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Image Feed/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

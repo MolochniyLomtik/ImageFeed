@@ -55,9 +55,9 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
         enterButton.layer.cornerRadius = 16
         view.addSubview(enterButton)
         
-        enterButton.widthAnchor.constraint(equalToConstant: 343).isActive = true
         enterButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
         enterButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
+        enterButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         enterButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 640).isActive = true
         
         self.enterButton = enterButton

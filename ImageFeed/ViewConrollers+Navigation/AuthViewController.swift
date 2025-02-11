@@ -73,8 +73,8 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
         splashScreenLogoView.widthAnchor.constraint(equalToConstant: 60).isActive = true
         splashScreenLogoView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         splashScreenLogoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        splashScreenLogoView.topAnchor.constraint(equalTo: view.topAnchor, constant: 280).isActive = true
-        
+        splashScreenLogoView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+
         self.splashScreenLogoView = splashScreenLogoView
     }
 }

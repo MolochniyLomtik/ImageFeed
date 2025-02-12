@@ -3,10 +3,11 @@ import UIKit
 
 final class SingleImageViewController: UIViewController {
     // MARK: - Public Properties
-    var image: UIImage? {
+    var image: Photo? {
         didSet {
             guard isViewLoaded, let image else { return }
-            imageView.image = image
+            imageView.kf.indicatorType = .activity
+            imageView.kf.setImage(with: image.largeImageURL)
             imageView.frame.size = image.size
         }
     }
@@ -48,25 +49,55 @@ final class SingleImageViewController: UIViewController {
     }
     // MARK: - Private Methods
     private func setSingleImageScreen() {
-        guard let image else { return }
         setImageView()
-        setScrollView(image: image)
+        setScrollView()
         setBackButton()
         setLikeButton()
         setShareButton()
     }
     
+    private func showError() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { preconditionFailure("weak self error")}
+            let alertModel = AlertModel(
+                title: "Что-то пошло не так(",
+                message: "Попробовать ещё раз?",
+                buttonText: "Повторить", buttonText2: "Не надо"
+            ) { [weak self] in
+                guard let self else { preconditionFailure("weak self error")}
+                UIBlockingProgressHUD.show()
+                setImage(for: self.imageView)
+            }
+            AlertPresenter.showAlert(model: alertModel, vc: self)
+        }
+    }
+    
+    private func setImage(for view: UIImageView) {
+        guard let image else { return }
+        view.kf.setImage(with: image.largeImageURL) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure:
+                self.showError()
+            }
+        }
+    }
+    
     private func setImageView() {
         guard let image else { return }
         let imageView = UIImageView()
-        imageView.image = image
+        UIBlockingProgressHUD.show()
+        setImage(for: imageView)
         imageView.frame.size = image.size
         imageView.contentMode = .scaleAspectFit
         
         self.imageView = imageView
     }
     
-    private func setScrollView(image: UIImage) {
+    private func setScrollView() {
         let scrollView = UIScrollView()
         view.layoutIfNeeded()
         scrollView.delegate = self
@@ -145,8 +176,8 @@ final class SingleImageViewController: UIViewController {
         let minScale = min(widthScale, heightScale)
         scrollView.minimumZoomScale = minScale
         scrollView.zoomScale = minScale
-        guard let image else {preconditionFailure("FUCK!")}
-        rescaleAndCenterImageInScrollView(image: image)
+        //        guard let image else {preconditionFailure("Image doesn't exist")}
+        //        rescaleAndCenterImageInScrollView(image: image)
         
     }
     
@@ -156,9 +187,9 @@ final class SingleImageViewController: UIViewController {
         view.layoutIfNeeded()
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
-        let hScale = imageSize.width /  visibleRectSize.width
-        let vScale = imageSize.height / visibleRectSize.height
-        let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
+        let hScale =   visibleRectSize.width / imageSize.width
+        let vScale =  visibleRectSize.height / imageSize.height
+        let scale = min(maxZoomScale, max(minZoomScale, max(hScale, vScale)))
         scrollView.setZoomScale(scale, animated: false)
         scrollView.zoomScale = scale
         scrollView.layoutIfNeeded()

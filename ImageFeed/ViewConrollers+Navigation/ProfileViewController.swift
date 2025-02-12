@@ -9,6 +9,7 @@ final class ProfileViewController: UIViewController {
     private var profile: Profile?
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private let profileLogoutService = ProfileLogoutService.shared
     private var profileImageView: UIImageView?
     private var exitButton: UIButton?
     private var fullNameTextLabel: UILabel?
@@ -17,6 +18,7 @@ final class ProfileViewController: UIViewController {
     private var favoritesTextLabel: UILabel?
     private var noFavoritesPhotoPlaceHolder: UIImageView?
     private var profileImageServiceObserver: NSObjectProtocol?
+    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +30,19 @@ final class ProfileViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func didTapExitButton() {
-        let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: "Auth token")
-        guard removeSuccessful else { preconditionFailure("token not removed")}
+        profileLogoutService.logout()
+        switchToSplashViewController()
     }
     // MARK: - Private Methods
+    private func switchToSplashViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid Configuration")
+            return
+        }
+        window.rootViewController = SplashViewController()
+        window.makeKeyAndVisible()
+    }
+    
     private func addProfileImageObserver() {
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(

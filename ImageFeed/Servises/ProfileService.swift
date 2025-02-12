@@ -61,8 +61,8 @@ final class ProfileService {
         self.task = task
         task.resume()
     }
-    
-    func makeProfileResultRequest() -> URLRequest? {
+    // MARK: - Private Methods
+    private func makeProfileResultRequest() -> URLRequest? {
         guard let url = URL(string: profileResultsConstants.unsplashGetProfileResultsURLString) else {
             assertionFailure("Cant make URL")
             return nil

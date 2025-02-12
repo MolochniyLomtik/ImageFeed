@@ -7,6 +7,7 @@ enum Constants {
     static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"
     static let accessScope = "public+read_user+write_likes"
     static let defaultBaseURL: URL = defaultBaseURLgetter
+    static let defaultBaseURLString = "https://api.unsplash.com"
     static private var defaultBaseURLgetter: URL {
         guard let url = URL(string: "https://api.unsplash.com") else {preconditionFailure("Unable to construct unsplashUrl")}
         return url

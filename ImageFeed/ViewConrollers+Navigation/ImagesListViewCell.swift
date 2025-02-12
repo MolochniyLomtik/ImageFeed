@@ -5,23 +5,28 @@ import UIKit
 final class ImagesListViewCell: UITableViewCell {
     // MARK: - Public Properties
     static let reuseIdentifier = "ImagesListCell"
+    weak var delegate: ImagesListCellDelegate?
     // MARK: - Private Properties
     private lazy var imageCellView = UIImageView()
     private lazy var likeButton = UIButton()
     private lazy var dateLabel = UILabel()
     private lazy var gradientView = UIView()
-    
+    private let isoDateFormatter = ISO8601DateFormatter()
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
+        formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter
     }()
-    
     // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setCellUI()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageCellView.kf.cancelDownloadTask()
     }
     
     required init?(coder: NSCoder) {
@@ -30,17 +35,24 @@ final class ImagesListViewCell: UITableViewCell {
     // MARK: - IB Actions
     @objc
     private func didTapLikeButton(_ sender: Any) {
-        //TODO: like service
+        delegate?.imageListCellDidTapLike(self)
     }
     // MARK: - Public Methods
-    func configCell(for cell: ImagesListViewCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: "\(indexPath.row)") else { return }
-        imageCellView.image = image
-        dateLabel.text = dateFormatter.string(from: Date())
-        let isLiked = indexPath.row % 2 == 0
-        likeButton.imageView?.image = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+    func configCell(for cell: ImagesListViewCell, with indexPath: IndexPath, from data: [Photo]) {
+        let photo = data[indexPath.row].thumbImageURL
+        imageCellView.kf.setImage(with: photo, placeholder: UIImage(named: "cellPlaceHolder"))
+        imageCellView.kf.indicatorType = .activity
+        if let photoDate = data[indexPath.row].createdAt, let date = isoDateFormatter.date(from: photoDate) {
+            dateLabel.text = dateFormatter.string(from: date)
+        } else {
+            dateLabel.text = ""
+        }
+        likeButton.imageView?.image = data[indexPath.row].isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
     }
     
+    func refreshLikeImage(to isLike: Bool) {
+        likeButton.setImage(isLike ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off"), for: .normal)
+    }
     // MARK: - Private Methods
     private func setCellUI() {
         setImageCellView()
@@ -65,13 +77,17 @@ final class ImagesListViewCell: UITableViewCell {
     }
     
     private func setLikeButton() {
+        guard let likeImage = UIImage(named: "like_button_off") else {return}
+        let likeButton = UIButton(type: .custom)
+        likeButton.setImage(likeImage, for: .normal)
+        likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
+        self.likeButton = likeButton
         self.contentView.addSubview(self.likeButton)
         self.likeButton.translatesAutoresizingMaskIntoConstraints = false
         self.likeButton.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 4).isActive = true
         self.likeButton.trailingAnchor.constraint(equalTo:  self.contentView.trailingAnchor, constant: -16).isActive = true
         self.likeButton.widthAnchor.constraint(equalToConstant: 42).isActive = true
         self.likeButton.heightAnchor.constraint(equalToConstant: 42).isActive = true
-        self.likeButton.addTarget(self, action: #selector(didTapLikeButton), for: .touchUpInside)
     }
     
     private func setDateLabel() {

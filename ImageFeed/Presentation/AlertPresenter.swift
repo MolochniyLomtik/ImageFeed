@@ -10,11 +10,17 @@ class AlertPresenter: AlertPresenterProtocol {
             message: model.message,
             preferredStyle: .alert
         )
-        let alertAction = UIAlertAction(title: model.buttonText, style: .default) { _ in
+        let alertFirstAction = UIAlertAction(title: model.buttonText, style: .default) { _ in
             model.completion()
         }
-        alertController.addAction(alertAction)
+        alertController.addAction(alertFirstAction)
         
+        if model.buttonText2 != nil {
+            let alertSecondAction = UIAlertAction(title: model.buttonText2, style: .default) { _ in
+                vc.dismiss(animated: true)
+            }
+            alertController.addAction(alertSecondAction)
+        }
         vc.present(alertController, animated: true, completion: nil)
     }
 }

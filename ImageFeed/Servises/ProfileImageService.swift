@@ -9,14 +9,18 @@ final class ProfileImageService {
     private var task: URLSessionTask? // для того чтобы смотреть выполняется ли сейчас поход в сеть за токеном
     private let storage = OAuth2TokenStorage()
     private let decoder = SnakeCaseJSONDecoder()
-    private(set) var avatarURL: String?
+    private(set) var avatarURL: URL?
     private enum AuthServiceError: Error {
         case invalidRequest
     }
     // MARK: - Initializers
     private init() {}
     // MARK: - Public Methods
-    func fetchImageURL(with username: String, completion: @escaping (Result<String, any Error>) -> Void) {
+    func clearAvatarURL() {
+        avatarURL = nil
+    }
+    
+    func fetchImageURL(with username: String, completion: @escaping (Result<URL, any Error>) -> Void) {
         assert(Thread.isMainThread)
         task?.cancel()
         guard let request = makeProfileResultRequest(username: username) else {
@@ -28,13 +32,14 @@ final class ProfileImageService {
             switch result {
             case .success(let userResult):
                 guard let imageURL = userResult.profileImage.large else { preconditionFailure("cant get image URL") }
-                self.avatarURL = imageURL
-                completion(.success(imageURL))
+                guard let url = URL(string: imageURL) else { preconditionFailure("cant make image URL") }
+                self.avatarURL = url
+                completion(.success(url))
                 NotificationCenter.default
                     .post(
                         name: ProfileImageService.didChangeNotification,
                         object: self,
-                        userInfo: ["URL": imageURL])
+                        userInfo: ["URL": url])
             case .failure(let error):
                 print("ProfileImageService Error - \(error)")
                 completion(.failure(error))

@@ -1,14 +1,14 @@
 import Foundation
 
-final class ImagesListService {
+final class ImagesListService: ImagesListServiceProtocol {
     // MARK: - IB Outlets
 
     // MARK: - Public Properties
+    var photos: [Photo] = []
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     // MARK: - Private Properties
     private let urlSession = URLSession.shared
-    private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
     private let storage = OAuth2TokenStorage()
     private var dataTask: URLSessionTask?
@@ -53,7 +53,7 @@ final class ImagesListService {
                     self.photos[index] = newPhoto
                 }
                 completion(.success(currentLike))
-                NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
+                sentNotification()
             case .failure(let error):
                 print("Images Service Error - \(error)")
             }
@@ -65,6 +65,8 @@ final class ImagesListService {
     func fetchPhotosNextPage() {
         
         assert(Thread.isMainThread)
+        
+        let nextPage = (lastLoadedPage ?? 0) + 1
         
         guard let request = makePhotosRequest() else {
             preconditionFailure("bad request")
@@ -79,8 +81,7 @@ final class ImagesListService {
                 response.forEach { response in
                     self.photos.append(Photo(from: response))
                 }
-                NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
-                let nextPage = (lastLoadedPage ?? 0) + 1
+                sentNotification()
                 self.dataTask = nil
                 self.lastLoadedPage = nextPage
             case .failure(let error):
@@ -90,6 +91,10 @@ final class ImagesListService {
         }
         self.dataTask = task
         task.resume()
+    }
+    
+    func sentNotification() {
+        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }
     // MARK: - Private Methods
     

@@ -25,7 +25,6 @@ final class OAuth2Service {
     private enum OAuth2ServiceConstants {
         static let unsplashGetTokenURLString = "https://unsplash.com/oauth/token"
     }
-    private let configuration = AuthConfiguration.standard
     // MARK: - Initializers
     private init() {}
     // MARK: - Public Methods
@@ -78,9 +77,9 @@ final class OAuth2Service {
         }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: configuration.accessKey),
-            URLQueryItem(name: "client_secret", value: configuration.secretKey),
-            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "client_secret", value: Constants.secretKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]

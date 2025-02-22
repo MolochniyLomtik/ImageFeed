@@ -1,14 +1,14 @@
 import Foundation
 
-final class ImagesListService: ImagesListServiceProtocol {
+final class ImagesListService {
     // MARK: - IB Outlets
 
     // MARK: - Public Properties
-    var photos: [Photo] = []
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     // MARK: - Private Properties
     private let urlSession = URLSession.shared
+    private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
     private let storage = OAuth2TokenStorage()
     private var dataTask: URLSessionTask?
@@ -53,7 +53,7 @@ final class ImagesListService: ImagesListServiceProtocol {
                     self.photos[index] = newPhoto
                 }
                 completion(.success(currentLike))
-                sentNotification()
+                NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
             case .failure(let error):
                 print("Images Service Error - \(error)")
             }
@@ -65,8 +65,6 @@ final class ImagesListService: ImagesListServiceProtocol {
     func fetchPhotosNextPage() {
         
         assert(Thread.isMainThread)
-        
-        let nextPage = (lastLoadedPage ?? 0) + 1
         
         guard let request = makePhotosRequest() else {
             preconditionFailure("bad request")
@@ -81,7 +79,8 @@ final class ImagesListService: ImagesListServiceProtocol {
                 response.forEach { response in
                     self.photos.append(Photo(from: response))
                 }
-                sentNotification()
+                NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
+                let nextPage = (lastLoadedPage ?? 0) + 1
                 self.dataTask = nil
                 self.lastLoadedPage = nextPage
             case .failure(let error):
@@ -91,10 +90,6 @@ final class ImagesListService: ImagesListServiceProtocol {
         }
         self.dataTask = task
         task.resume()
-    }
-    
-    func sentNotification() {
-        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: self)
     }
     // MARK: - Private Methods
     

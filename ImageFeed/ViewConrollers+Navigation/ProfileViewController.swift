@@ -83,8 +83,6 @@ final class ProfileViewController: UIViewController {
         setFullNameTextLabel()
         setProfileLoginTextLabel()
         setProfileStatusTextLabel()
-        setFavoritesTextLabel()
-        setNoFavoritesPhotoPlaceHolder()
     }
     
     private func setProfileImage() {
@@ -170,35 +168,6 @@ final class ProfileViewController: UIViewController {
         profileStatusTextLabel.leadingAnchor.constraint(equalTo: profileLoginTextLabel.leadingAnchor).isActive = true
         profileStatusTextLabel.topAnchor.constraint(equalTo: profileLoginTextLabel.bottomAnchor, constant: 8).isActive = true
         self.profileStatusTextLabel = profileStatusTextLabel
-    }
-    
-    private func setFavoritesTextLabel() {
-        guard let profileStatusTextLabel = self.profileStatusTextLabel else { return }
-        let favoritesTextLabel = UILabel()
-        view.addSubview(favoritesTextLabel)
-        favoritesTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        favoritesTextLabel.text = "Избранное"
-        favoritesTextLabel.textColor = .white
-        favoritesTextLabel.font = .boldSystemFont(ofSize: 23)
-        
-        favoritesTextLabel.widthAnchor.constraint(equalToConstant: 129).isActive = true
-        favoritesTextLabel.heightAnchor.constraint(equalToConstant: 18).isActive = true
-        favoritesTextLabel.leadingAnchor.constraint(equalTo: profileStatusTextLabel.leadingAnchor).isActive = true
-        favoritesTextLabel.topAnchor.constraint(equalTo: profileStatusTextLabel.bottomAnchor, constant: 24).isActive = true
-        self.favoritesTextLabel = favoritesTextLabel
-    }
-    
-    private func setNoFavoritesPhotoPlaceHolder() {
-        let noFavoritesPhotoPlaceHolder = UIImageView()
-        let FavoritesPhotoImage = UIImage(named: "noPhoto")
-        noFavoritesPhotoPlaceHolder.image = FavoritesPhotoImage
-        noFavoritesPhotoPlaceHolder.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(noFavoritesPhotoPlaceHolder)
-        noFavoritesPhotoPlaceHolder.widthAnchor.constraint(equalToConstant: 115).isActive = true
-        noFavoritesPhotoPlaceHolder.heightAnchor.constraint(equalToConstant: 115).isActive = true
-        noFavoritesPhotoPlaceHolder.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 130).isActive = true
-        noFavoritesPhotoPlaceHolder.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 332).isActive = true
-        self.noFavoritesPhotoPlaceHolder = noFavoritesPhotoPlaceHolder
     }
 }
 

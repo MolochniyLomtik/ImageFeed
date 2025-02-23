@@ -3,11 +3,12 @@ import UIKit
 final class SingleImageViewController: UIViewController {
   // MARK: - Public Properties
   var image: Photo? {
-      didSet {
-          guard let image else { return }
-          imageView.kf.indicatorType = .activity
-          imageView.kf.setImage(with: image.largeImageURL)
-      }
+    didSet {
+      guard let image else { return }
+      imageView.kf.indicatorType = .activity
+      imageView.kf.setImage(with: image.largeImageURL)
+      imageView.frame.size = image.size
+    }
   }
 
   // MARK: - Private Properties
@@ -31,7 +32,6 @@ final class SingleImageViewController: UIViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    // Когда экран появляется, удостоверяемся, что изображение правильно масштабировано
     if imageView.image == nil {
       loadImage()
     }
@@ -81,34 +81,34 @@ final class SingleImageViewController: UIViewController {
   private var isImageLoading = false
 
   private func loadImage() {
-      guard let image else { return }
+    guard let image else { return }
 
-      isImageLoading = true
-      UIBlockingProgressHUD.show()
+    isImageLoading = true
+    UIBlockingProgressHUD.show()
 
-      imageView.kf.setImage(with: image.largeImageURL) { [weak self] result in
-          guard let self else { return }
+    imageView.kf.setImage(with: image.largeImageURL) { [weak self] result in
+      guard let self else { return }
 
-          UIBlockingProgressHUD.dismiss()
-          self.isImageLoading = false
+      UIBlockingProgressHUD.dismiss()
+      self.isImageLoading = false
 
-          switch result {
-          case .success(let imageResult):
-              self.imageView.image = imageResult.image
-              self.imageView.frame.size = imageResult.image.size
-              self.imageView.contentMode = .scaleAspectFit
-              self.updateScrollViewForImage()
+      switch result {
+      case .success(let imageResult):
+        self.imageView.image = imageResult.image
+        self.imageView.contentMode = .scaleAspectFit
+        self.updateScrollViewForImage()
 
-          case .failure:
-              self.showError()
-          }
+      case .failure:
+        self.showError()
       }
+    }
   }
-
-
+  
   private func setImageView() {
+    guard let image else { return }
     let imageView = UIImageView()
     UIBlockingProgressHUD.show()
+    imageView.frame.size = image.size
     loadImage()
     self.imageView = imageView
   }
@@ -153,7 +153,6 @@ final class SingleImageViewController: UIViewController {
     shareButton.addTarget(self, action: #selector(didTapShareButton), for: .touchUpInside)
     shareButton.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(shareButton)
-
     shareButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
     shareButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
     shareButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -69).isActive = true

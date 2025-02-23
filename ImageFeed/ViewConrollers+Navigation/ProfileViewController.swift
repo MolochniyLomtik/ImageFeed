@@ -4,6 +4,7 @@ import Kingfisher
 import SwiftKeychainWrapper
 
 final class ProfileViewController: UIViewController {
+    var presenter: ProfileViewPresenterProtocol?
     // MARK: - Private Properties
     private let storage = OAuth2TokenStorage()
     private var profile: Profile?
@@ -30,10 +31,28 @@ final class ProfileViewController: UIViewController {
     // MARK: - Actions
     @objc
     private func didTapExitButton() {
-        profileLogoutService.logout()
-        switchToSplashViewController()
+        showAlert()
+    }
+
+    func logoutDidTapped() {
+      profileLogoutService.logout()
+      switchToSplashViewController()
     }
     // MARK: - Private Methods
+    private func showAlert() {
+      DispatchQueue.main.async { [weak self] in
+        guard let self else { return }
+        let alertModel = AlertModel(
+          title: "Пока Пока!",
+          message: "Уверены что хотите выйти?",
+          buttonText: "Да",
+          buttonText2: "Нет",
+          completion: { self.logoutDidTapped() }
+        )
+        AlertPresenter.showAlert(model: alertModel, vc: self)
+      }
+    }
+
     private func switchToSplashViewController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid Configuration")
@@ -57,15 +76,16 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL),
-            let pick = profileImageView
-        else { return }
-        pick.kf.indicatorType = .activity
-        let processor = RoundCornerImageProcessor(cornerRadius: 0, backgroundColor: .ypBlack)
-        pick.kf.setImage(with: url, options: [.processor(processor)])
+      guard
+        let profileImageURL = ProfileImageService.shared.avatarURL,
+        let pick = profileImageView
+      else { return }
+
+      pick.kf.indicatorType = .activity
+      let processor = RoundCornerImageProcessor(cornerRadius: 0, backgroundColor: .ypBlack)
+      pick.kf.setImage(with: profileImageURL, options: [.processor(processor)])
     }
+
     
     private func updateProfileDetails() {
         guard let profile = profileService.profile else {

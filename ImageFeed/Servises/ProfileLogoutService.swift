@@ -27,16 +27,16 @@ final class ProfileLogoutService {
             }
         }
     }
-    
+
     private func cleanToken() {
         let removeSuccessful: Bool = KeychainWrapper.standard.removeObject(forKey: "Auth token")
         guard removeSuccessful else { preconditionFailure("token not removed")}
     }
-    
+
     private func clearProfileImage() {
         profileImageService.clearAvatarURL()
     }
-    
+
     private func clearImageListImages() {
         imagesListService.clearPhotos()
     }

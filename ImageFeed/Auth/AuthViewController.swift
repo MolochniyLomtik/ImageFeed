@@ -57,6 +57,7 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
         enterButton.addTarget(self, action: #selector(didEnterButtonTapped), for: .touchUpInside)
         enterButton.translatesAutoresizingMaskIntoConstraints = false
         enterButton.layer.cornerRadius = 16
+        enterButton.accessibilityIdentifier = "Authenticate"
         view.addSubview(enterButton)
 
         enterButton.heightAnchor.constraint(equalToConstant: 48).isActive = true

@@ -132,6 +132,9 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController {
     func tableView( _ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if ProcessInfo.processInfo.environment["isUITest"] == "true" {
+          return
+        }
         guard let presenter else { preconditionFailure("presenter doesn't exist") }
         let indexPath = indexPath.isEmpty ? nil : indexPath.row
         presenter.loadNextPageIfNeeded(currentNumbers: indexPath)

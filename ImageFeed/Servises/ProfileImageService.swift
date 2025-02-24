@@ -20,43 +20,34 @@ final class ProfileImageService {
         avatarURL = nil
     }
     
-    func fetchImageURL(with username: String, completion: @escaping (Result<URL, Error>) -> Void) {
-      assert(Thread.isMainThread)
-      task?.cancel()
-
-      guard let request = makeProfileResultRequest(username: username) else {
-        completion(.failure(AuthServiceError.invalidRequest))
-        return
-      }
-
-      let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
-        guard let self = self else { preconditionFailure("self is unavailable") }
-
-        switch result {
-        case .success(let userResult):
-          guard let imageURLString = userResult.profileImage.large,
-                let imageURL = URL(string: imageURLString) else {
-            preconditionFailure("Cannot get image URL or create URL from string")
-          }
-
-          self.avatarURL = imageURL
-          completion(.success(imageURL))
-          NotificationCenter.default.post(
-            name: ProfileImageService.didChangeNotification,
-            object: self,
-            userInfo: ["URL": imageURL]
-          )
-
-        case .failure(let error):
-          print("ProfileImageService Error - \(error)")
-          completion(.failure(error))
+    func fetchImageURL(with username: String, completion: @escaping (Result<URL, any Error>) -> Void) {
+        assert(Thread.isMainThread)
+        task?.cancel()
+        guard let request = makeProfileResultRequest(username: username) else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
         }
-
-        self.task = nil
-      }
-
-      self.task = task
-      task.resume()
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+            guard let self else { preconditionFailure("self is unavalible") }
+            switch result {
+            case .success(let userResult):
+                guard let imageURL = userResult.profileImage.large else { preconditionFailure("cant get image URL") }
+                guard let url = URL(string: imageURL) else { preconditionFailure("cant make image URL") }
+                self.avatarURL = url
+                completion(.success(url))
+                NotificationCenter.default
+                    .post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": url])
+            case .failure(let error):
+                print("ProfileImageService Error - \(error)")
+                completion(.failure(error))
+            }
+            self.task = nil
+        }
+        self.task = task
+        task.resume()
     }
     
     func makeProfileResultRequest(username: String) -> URLRequest? {

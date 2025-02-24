@@ -54,22 +54,22 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
         enterButton.translatesAutoresizingMaskIntoConstraints = false
         enterButton.layer.cornerRadius = 16
         view.addSubview(enterButton)
-        
+
         enterButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
         enterButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         enterButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
         enterButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 640).isActive = true
-        
+
         self.enterButton = enterButton
     }
-    
+
     private func setSplashScreenLogoView() {
         let splashScreenLogoView = UIImageView()
         let splashScreenLogo = UIImage(named: "logoOfUnsplash")
         splashScreenLogoView.image = splashScreenLogo
         splashScreenLogoView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(splashScreenLogoView)
-        
+
         splashScreenLogoView.widthAnchor.constraint(equalToConstant: 60).isActive = true
         splashScreenLogoView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         splashScreenLogoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true

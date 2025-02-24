@@ -119,7 +119,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
             let alertModel = AlertModel(
                 title: "Что-то пошло не так(",
                 message: "Не удалось войти в систему",
-                buttonText: "Ок"
+                buttonText: "Ок", buttonText2: nil
             ) { [weak self] in
                 guard let self else { preconditionFailure("weak self error")}
                 self.authenticateStatus = false
@@ -130,18 +130,18 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     }
     
     private func setSplashScreenLogoImageView() {
-        let splashScreenLogoImageView = UIImageView()
-        let splashScreenLogo = UIImage(named: "splashScreenLogo")
-        splashScreenLogoImageView.image = splashScreenLogo
-        splashScreenLogoImageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(splashScreenLogoImageView)
-        splashScreenLogoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        splashScreenLogoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 272).isActive = true
-        splashScreenLogoImageView.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        splashScreenLogoImageView.widthAnchor.constraint(equalToConstant: 72).isActive = true
-        self.splashScreenLogoImageView = splashScreenLogoImageView
+      let splashScreenLogoImageView = UIImageView()
+      let splashScreenLogo = UIImage(named: "splashScreenLogo")
+      splashScreenLogoImageView.image = splashScreenLogo
+      splashScreenLogoImageView.translatesAutoresizingMaskIntoConstraints = false
+      view.addSubview(splashScreenLogoImageView)
+      splashScreenLogoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+      splashScreenLogoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 272).isActive = true
+      splashScreenLogoImageView.heightAnchor.constraint(equalToConstant: 75).isActive = true
+      splashScreenLogoImageView.widthAnchor.constraint(equalToConstant: 72).isActive = true
+      self.splashScreenLogoImageView = splashScreenLogoImageView
     }
-    
+
     private func setupSplashScreen() {
         setSplashScreenLogoImageView()
         view.backgroundColor = .ypBlack

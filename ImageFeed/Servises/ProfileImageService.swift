@@ -9,40 +9,54 @@ final class ProfileImageService {
     private var task: URLSessionTask? // для того чтобы смотреть выполняется ли сейчас поход в сеть за токеном
     private let storage = OAuth2TokenStorage()
     private let decoder = SnakeCaseJSONDecoder()
-    private(set) var avatarURL: String?
+    private(set) var avatarURL: URL?
     private enum AuthServiceError: Error {
         case invalidRequest
     }
     // MARK: - Initializers
     private init() {}
     // MARK: - Public Methods
-    func fetchImageURL(with username: String, completion: @escaping (Result<String, any Error>) -> Void) {
-        assert(Thread.isMainThread)
-        task?.cancel()
-        guard let request = makeProfileResultRequest(username: username) else {
-            completion(.failure(AuthServiceError.invalidRequest))
-            return
+    func clearAvatarURL() {
+        avatarURL = nil
+    }
+    
+    func fetchImageURL(with username: String, completion: @escaping (Result<URL, Error>) -> Void) {
+      assert(Thread.isMainThread)
+      task?.cancel()
+
+      guard let request = makeProfileResultRequest(username: username) else {
+        completion(.failure(AuthServiceError.invalidRequest))
+        return
+      }
+
+      let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+        guard let self = self else { preconditionFailure("self is unavailable") }
+
+        switch result {
+        case .success(let userResult):
+          guard let imageURLString = userResult.profileImage.large,
+                let imageURL = URL(string: imageURLString) else {
+            preconditionFailure("Cannot get image URL or create URL from string")
+          }
+
+          self.avatarURL = imageURL
+          completion(.success(imageURL))
+          NotificationCenter.default.post(
+            name: ProfileImageService.didChangeNotification,
+            object: self,
+            userInfo: ["URL": imageURL]
+          )
+
+        case .failure(let error):
+          print("ProfileImageService Error - \(error)")
+          completion(.failure(error))
         }
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
-            guard let self else { preconditionFailure("self is unavalible") }
-            switch result {
-            case .success(let userResult):
-                guard let imageURL = userResult.profileImage.large else { preconditionFailure("cant get image URL") }
-                self.avatarURL = imageURL
-                completion(.success(imageURL))
-                NotificationCenter.default
-                    .post(
-                        name: ProfileImageService.didChangeNotification,
-                        object: self,
-                        userInfo: ["URL": imageURL])
-            case .failure(let error):
-                print("ProfileImageService Error - \(error)")
-                completion(.failure(error))
-            }
-            self.task = nil
-        }
-        self.task = task
-        task.resume()
+
+        self.task = nil
+      }
+
+      self.task = task
+      task.resume()
     }
     
     func makeProfileResultRequest(username: String) -> URLRequest? {

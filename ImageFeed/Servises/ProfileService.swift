@@ -20,9 +20,9 @@ final class ProfileService {
     private init() {}
     // MARK: - Public Methods
     func fetchProfile(with token: String, completion: @escaping (Result<Profile, any Error>) -> Void) {
-        
+
         assert(Thread.isMainThread)
-        
+
         if task != nil {
             if lastToken != token {
                 task?.cancel()
@@ -36,14 +36,14 @@ final class ProfileService {
                 return
             }
         }
-        
+
         lastToken = token
-        
+
         guard let request = makeProfileResultRequest() else {
             completion(.failure(AuthServiceError.invalidRequest))
             return
         }
-        
+
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResponseResult, Error>) in
             guard let self else { preconditionFailure("self is unavalible") }
             switch result {
@@ -67,12 +67,12 @@ final class ProfileService {
             assertionFailure("Cant make URL")
             return nil
         }
-        
+
         let token = String(describing: storage.token!)
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
+
         return request
     }
 }
